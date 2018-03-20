@@ -92,7 +92,8 @@ export class WebView extends WebViewBase {
         const configuration = WKWebViewConfiguration.new();
         this._delegate = WKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
         const jScript = "var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'initial-scale=1.0'); document.getElementsByTagName('head')[0].appendChild(meta);";
-        const wkUScript = WKUserScript.alloc().initWithSourceInjectionTimeForMainFrameOnly(jScript,WKUserScriptInjectionTime.AtDocumentEnd,true);
+        const jScriptWithMetaCheck = `if (!document.querySelector('meta[name="viewport"]')) { ${jScript} }`;
+        const wkUScript = WKUserScript.alloc().initWithSourceInjectionTimeForMainFrameOnly(jScriptWithMetaCheck,WKUserScriptInjectionTime.AtDocumentEnd,true);
         const wkUController = WKUserContentController.new();
         wkUController.addUserScript(wkUScript);
         configuration.userContentController = wkUController;
@@ -156,4 +157,4 @@ export class WebView extends WebViewBase {
     public reload() {
         this._ios.reload();
     }
-} 
+}
